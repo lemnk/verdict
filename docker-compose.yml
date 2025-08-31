@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://verdictvault:password@db:5432/verdictvault
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - verdictvault-network
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=verdictvault
+      - POSTGRES_USER=verdictvault
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - verdictvault-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - verdictvault-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  verdictvault-network:
+    driver: bridge
