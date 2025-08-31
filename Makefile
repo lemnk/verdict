@@ -1,12 +1,16 @@
-.PHONY: install test dev build up down clean logs
+.PHONY: install test test-parse dev build up down clean logs migrate migration
 
 # Install dependencies
 install:
 	pip install -r requirements.txt
 
-# Run tests
+# Run all tests
 test:
 	python -m pytest tests/ -v
+
+# Run parse-specific tests
+test-parse:
+	python -m pytest tests/test_parse.py -v
 
 # Development server
 dev:
@@ -40,3 +44,7 @@ migrate:
 # Create migration
 migration:
 	alembic revision --autogenerate -m "$(message)"
+
+# Parse document (example usage)
+parse-doc:
+	@echo "Usage: curl -X POST 'http://localhost:8000/api/parse/{doc_id}' -H 'Authorization: Bearer {token}'"

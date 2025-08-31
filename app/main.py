@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, upload, search
+from app.routers import auth, upload, search, parse
 
 app = FastAPI(
     title="VerdictVault",
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(upload.router, prefix="/api/upload", tags=["document_upload"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
+app.include_router(parse.router, prefix="/api/parse", tags=["document_parsing"])
 
 @app.get("/")
 async def root():

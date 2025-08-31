@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 import uuid
+from datetime import datetime
 from .database import Base
 
 class User(Base):
@@ -29,6 +30,19 @@ class Document(Base):
     
     owner = relationship("User", back_populates="documents")
     precedents = relationship("Precedent", back_populates="source_document")
+    chunks = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")
+
+class DocumentChunk(Base):
+    __tablename__ = "document_chunks"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    doc_id = Column(UUID(as_uuid=True), ForeignKey("documents.id"), nullable=False)
+    chunk_index = Column(Integer, nullable=False)
+    content = Column(Text, nullable=False)
+    embedding = Column(JSONB)  # Store embedding vectors as JSON
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    document = relationship("Document", back_populates="chunks")
 
 class Precedent(Base):
     __tablename__ = "precedents"
