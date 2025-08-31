@@ -1,4 +1,4 @@
-.PHONY: install test test-parse test-rag dev build up down clean logs migrate migration
+.PHONY: install test test-parse test-rag dev build up down clean logs migrate migration migrate-role
 
 # Install dependencies
 install:
@@ -48,6 +48,10 @@ migrate:
 # Create migration
 migration:
 	alembic revision --autogenerate -m "$(message)"
+
+# Add role column to users table
+migrate-role:
+	python migrate_add_role.py
 
 # Parse document (example usage)
 parse-doc:

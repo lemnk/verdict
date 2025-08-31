@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { getUser, logout } from '../lib/auth'
+import { getUser, logout, isAdmin } from '../lib/auth'
 import { Button } from './ui/Button'
 
 export function NavBar() {
@@ -42,6 +42,14 @@ export function NavBar() {
               >
                 History
               </Link>
+              {isAdmin() && (
+                <Link
+                  to="/admin"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Admin
+                </Link>
+              )}
             </div>
           </div>
           
@@ -49,6 +57,11 @@ export function NavBar() {
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
                 Welcome, {user.name}
+                {isAdmin() && (
+                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                    Admin
+                  </span>
+                )}
               </span>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 Logout

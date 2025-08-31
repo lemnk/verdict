@@ -4,12 +4,23 @@ import { Upload } from './pages/Upload'
 import { Ask } from './pages/Ask'
 import { History } from './pages/History'
 import { Document } from './pages/Document'
+import { Admin } from './pages/Admin'
 import { App } from './App'
-import { isAuthenticated } from './lib/auth'
+import { isAuthenticated, isAdmin } from './lib/auth'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />
+  }
+  return <>{children}</>
+}
+
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />
+  }
+  if (!isAdmin()) {
+    return <Navigate to="/upload" replace />
   }
   return <>{children}</>
 }
@@ -46,6 +57,20 @@ export const router = createBrowserRouter([
       {
         path: 'document/:docId',
         element: <Document />
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    element: (
+      <RequireAdmin>
+        <App />
+      </RequireAdmin>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Admin />
       }
     ]
   }

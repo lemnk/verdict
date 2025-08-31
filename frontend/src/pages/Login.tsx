@@ -26,7 +26,8 @@ export function Login() {
       setUser({
         id: response.id,
         email: response.email,
-        name: response.name
+        name: response.name,
+        role: response.role || 'user'
       })
       
       // Navigate to upload page
