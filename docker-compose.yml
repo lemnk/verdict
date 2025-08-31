@@ -7,8 +7,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://verdictvault:password@db:5432/verdictvault
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/verdict
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
       - redis
@@ -24,8 +24,8 @@ services:
   api:
     build: .
     environment:
-      - DATABASE_URL=postgresql://verdictvault:password@db:5432/verdictvault
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/verdict
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
       - redis
@@ -68,9 +68,9 @@ services:
   db:
     image: postgres:15
     environment:
-      - POSTGRES_DB=verdictvault
-      - POSTGRES_USER=verdictvault
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=verdict
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -78,7 +78,7 @@ services:
     networks:
       - verdictvault-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U verdictvault -d verdictvault"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d verdict"]
       interval: 30s
       timeout: 10s
       retries: 3
