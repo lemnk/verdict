@@ -13,6 +13,15 @@ logger = logging.getLogger(__name__)
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+def generate_embedding(text: str) -> List[float]:
+    """Generate a single embedding. Thin wrapper around embed_chunks for parity with callers."""
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("text must be a non-empty string")
+    vecs = embed_chunks([text])
+    if not vecs or not isinstance(vecs[0], list):
+        raise RuntimeError("embedding backend returned an empty or invalid vector")
+    return vecs[0]
+
 def embed_chunks(chunks: List[str]) -> List[List[float]]:
     """Generate embeddings for text chunks using OpenAI text-embedding-3-small"""
     if not chunks:
