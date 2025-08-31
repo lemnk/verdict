@@ -1,4 +1,4 @@
-.PHONY: install test test-parse dev build up down clean logs migrate migration
+.PHONY: install test test-parse test-rag dev build up down clean logs migrate migration
 
 # Install dependencies
 install:
@@ -11,6 +11,10 @@ test:
 # Run parse-specific tests
 test-parse:
 	python -m pytest tests/test_parse.py -v
+
+# Run RAG-specific tests
+test-rag:
+	python -m pytest tests/test_rag.py -v
 
 # Development server
 dev:
@@ -48,3 +52,7 @@ migration:
 # Parse document (example usage)
 parse-doc:
 	@echo "Usage: curl -X POST 'http://localhost:8000/api/parse/{doc_id}' -H 'Authorization: Bearer {token}'"
+
+# Ask legal question (example usage)
+ask-question:
+	@echo "Usage: curl -X POST 'http://localhost:8000/api/rag/ask' -H 'Authorization: Bearer {token}' -H 'Content-Type: application/json' -d '{\"query\": \"What is contract law?\"}'"

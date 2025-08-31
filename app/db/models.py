@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text, Float, ForeignKey, Boolean, Numeric
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -16,6 +16,7 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     documents = relationship("Document", back_populates="owner")
+    query_logs = relationship("QueryLog", back_populates="user")
 
 class Document(Base):
     __tablename__ = "documents"
@@ -43,6 +44,23 @@ class DocumentChunk(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     document = relationship("Document", back_populates="chunks")
+
+class QueryLog(Base):
+    __tablename__ = "query_logs"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    query = Column(Text, nullable=False)
+    provider = Column(String, nullable=False)
+    model = Column(String, nullable=False)
+    tokens_in = Column(Integer, nullable=False)
+    tokens_out = Column(Integer, nullable=False)
+    cost_usd = Column(Numeric(10, 6), nullable=False)
+    latency_ms = Column(Integer, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    cached = Column(Boolean, default=False)
+    
+    user = relationship("User", back_populates="query_logs")
 
 class Precedent(Base):
     __tablename__ = "precedents"
