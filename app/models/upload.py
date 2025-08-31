@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
+from uuid import UUID
 
 class DocumentStatus(str, Enum):
     UPLOADED = "uploaded"
@@ -8,7 +9,10 @@ class DocumentStatus(str, Enum):
     FAILED = "failed"
 
 class DocumentUploadResponse(BaseModel):
-    document_id: str
-    filename: str
+    id: UUID
     status: DocumentStatus
-    message: str
+
+class DocumentStatusResponse(BaseModel):
+    document_id: UUID
+    status: DocumentStatus
+    progress: int
