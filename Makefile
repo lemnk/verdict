@@ -1,4 +1,4 @@
-.PHONY: install test test-parse test-rag dev build up down clean logs migrate migration migrate-role
+.PHONY: install test test-parse test-rag dev dev-frontend build build-frontend up up-prod down clean logs migrate migration migrate-role
 
 # Install dependencies
 install:
@@ -20,13 +20,25 @@ test-rag:
 dev:
 	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
+# Frontend development server
+dev-frontend:
+	cd frontend && npm run dev
+
 # Build Docker image
 build:
 	docker-compose build
 
-# Start services
+# Build frontend for production
+build-frontend:
+	cd frontend && npm run build
+
+# Start development services
 up:
-	docker-compose up -d
+	docker-compose --profile dev up -d
+
+# Start production services
+up-prod:
+	docker-compose --profile prod up -d
 
 # Stop services
 down:
@@ -60,3 +72,7 @@ parse-doc:
 # Ask legal question (example usage)
 ask-question:
 	@echo "Usage: curl -X POST 'http://localhost:8000/api/rag/ask' -H 'Authorization: Bearer {token}' -H 'Content-Type: application/json' -d '{\"query\": \"What is contract law?\"}'"
+
+# Production deployment
+deploy: build-frontend up-prod
+	@echo "Production deployment complete. Frontend available at http://localhost"
